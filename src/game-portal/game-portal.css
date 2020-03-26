@@ -1,0 +1,8 @@
+.game-portal {
+  position: relative;
+  width: 100%;
+  margin: 20px;
+  margin-left: 0px;
+  /* background-color: transparent; */
+  background-color: fuchsia;
+}

@@ -1,0 +1,16 @@
+.side-bar {
+  width: fit-content;
+  display: flex;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  justify-content: space-between;
+
+  > * {
+    margin: 20px;
+    margin-bottom: 0px;
+
+    &:last-child {
+      margin-bottom: 20px;
+    }
+  }
+}
