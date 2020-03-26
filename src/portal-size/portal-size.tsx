@@ -9,15 +9,33 @@ export class PortalSize extends Component<{}> {
   //   // const parent = findDOMNode(this)?.parentElement;
   // }
 
+  componentDidMount() {
+    this.setState({});
+  }
+
   render() {
-    console.log(this.test.current?.offsetWidth);
+    const width = this.test.current?.parentElement?.offsetWidth;
+    const height = this.test.current?.parentElement?.offsetHeight;
+    const top = this.test.current?.parentElement?.offsetTop;
+    const left = this.test.current?.parentElement?.offsetLeft;
+    const right =
+      window.innerWidth -
+      ((this.test.current?.parentElement?.offsetLeft ?? 0) + (width ?? 0));
 
     return (
-      <div className="portal-size" ref={this.test}>
-        {/* {parent?.offsetWidth}×{parent?.offsetHeight} */}
-        0x0
-        {/* {this.refs.child.parentNode.clientWidth} */}
-        {this.refs.child}
+      <div
+        className="portal-size"
+        ref={this.test}
+        onClick={e => e.stopPropagation()}
+      >
+        <div>
+          {width ?? '?'}×{height ?? '?'}
+        </div>
+        <div className="details">
+          <div>Top: {top ?? '?'}</div>
+          <div>Left: {left ?? '?'}</div>
+          <div>Right: {right !== 0 ? right : '?'}</div>
+        </div>
       </div>
     );
   }
