@@ -1,9 +1,9 @@
 import React from 'react';
 import { render } from '@testing-library/react';
-import App from '../App';
+import { NotificationSpotify } from './spotify-oauth';
 
 test('renders learn react link', () => {
-  const { getByText } = render(<App />);
-  const linkElement = getByText(/learn react/i);
+  const { getByText } = render(<NotificationSpotify api_key={''} />);
+  const linkElement = getByText(/./i);
   expect(linkElement).toBeInTheDocument();
 });

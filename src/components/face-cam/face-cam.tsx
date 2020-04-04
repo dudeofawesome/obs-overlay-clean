@@ -1,11 +1,9 @@
-import React, { Component, createRef, RefObject, useState } from 'react';
+import React, { Component, createRef, RefObject } from 'react';
 import {
   Window,
   TitleBar,
-  Dialog,
   SegmentedControl,
   SegmentedControlItem,
-  Text,
   Button,
 } from 'react-desktop/macOs';
 import Modal from 'react-modal';
@@ -25,24 +23,24 @@ export class FaceCam extends Component<{}, FaceCamState> {
   }
 
   async componentDidMount() {
-    const media_devices = (
-      await navigator.mediaDevices.enumerateDevices()
-    ).filter(dev => dev.kind === 'videoinput');
-    if (media_devices.length === 0) {
+    const media_devices: MediaDeviceInfo[] | null = (
+      await navigator.mediaDevices?.enumerateDevices()
+    )?.filter(dev => dev.kind === 'videoinput');
+    if (media_devices?.length === 0) {
       this.setState({
         ...this.state,
         error_msg: 'No video devices found',
       });
-      // } else if (media_devices.length === 1) {
-      //   const selected_device_id = media_devices[0].deviceId;
-      //   console.log(selected_device_id);
-      //   this.setState({
-      //     ...this.state,
-      //     media_stream: await navigator.mediaDevices.getUserMedia({
-      //       video: { deviceId: selected_device_id },
-      //     }),
-      //   });
-    } else if (media_devices.length > 0) {
+    } else if (media_devices?.length === 1) {
+      const selected_device_id = media_devices?.[0].deviceId;
+      console.log(selected_device_id);
+      this.setState({
+        ...this.state,
+        media_stream: await navigator.mediaDevices.getUserMedia({
+          video: { deviceId: selected_device_id },
+        }),
+      });
+    } else if (media_devices?.length > 0) {
       // TODO: change 0 to 1
       this.setState({
         ...this.state,
@@ -143,7 +141,6 @@ export class FaceCam extends Component<{}, FaceCamState> {
                 Select Camera
               </Button>
             </div>
-            {/* </div> */}
           </Window>
         </Modal>
       </div>

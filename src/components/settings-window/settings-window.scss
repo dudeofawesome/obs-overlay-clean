@@ -1,0 +1,14 @@
+.portal-size {
+  position: absolute;
+  /* margin: auto; */
+  width: min-content;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 5rem;
+  color: lime;
+}
+
+.details {
+  font-size: 3rem;
+}

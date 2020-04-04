@@ -1,0 +1,60 @@
+.notification {
+  position: relative;
+  width: 100%;
+  min-height: 50px;
+  // background-color: white;
+  border-radius: 14px;
+  overflow: hidden;
+  background-color: rgba(255, 255, 255, 0.3);
+  backdrop-filter: blur(20px);
+}
+
+.row {
+  display: flex;
+  flex-direction: row;
+}
+
+.column {
+  display: flex;
+  flex-direction: column;
+}
+
+.header {
+  justify-content: flex-start;
+  align-items: center;
+  font-size: 1rem;
+  padding: 11px;
+  color: rgba(0, 0, 0, 0.7);
+  font-size: 0.8rem;
+
+  .icon {
+    width: 1.1rem;
+    height: 1.1rem;
+    margin-right: 6px;
+  }
+
+  .name {
+    text-transform: uppercase;
+  }
+
+  .spacer {
+    flex-grow: 1;
+  }
+
+  .time {
+    align-self: flex-end;
+  }
+}
+
+.body {
+  padding: 12px;
+  padding-top: 0px;
+}
+
+.stack {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  right: 0px;
+  bottom: 0px;
+}

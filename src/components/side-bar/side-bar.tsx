@@ -1,10 +1,10 @@
 import React from 'react';
 import { FaceCam } from '../face-cam/face-cam';
-import Notifications from '../notifications/notifications';
+import { Notifications } from '../notifications/notifications';
 
 import './side-bar.scss';
 
-function SideBar() {
+export function SideBar() {
   return (
     <div className="side-bar">
       <Notifications></Notifications>
@@ -12,5 +12,3 @@ function SideBar() {
     </div>
   );
 }
-
-export default SideBar;

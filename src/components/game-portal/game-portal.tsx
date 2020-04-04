@@ -3,7 +3,7 @@ import './game-portal.css';
 import '../window/window.scss';
 import { PortalSize } from '../portal-size/portal-size';
 
-function GamePortal() {
+export function GamePortal() {
   const [show_size, set_show_size] = useState(false);
 
   return (
@@ -15,5 +15,3 @@ function GamePortal() {
     </div>
   );
 }
-
-export default GamePortal;
