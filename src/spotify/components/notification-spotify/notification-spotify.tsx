@@ -2,16 +2,25 @@ import React, { Component } from 'react';
 import { Duration, DateTime } from 'luxon';
 import { FaPlay, FaPause } from 'react-icons/fa';
 
-import './notification-spotify.scss';
+import { SpotifyServiceContext } from '../../../context';
 import { Notification } from '../../../components/notification/notification';
+import { SpotifyService } from '../../services/spotify.service';
+
+import './notification-spotify.scss';
+import { timer, Subscription } from 'rxjs';
 
 export class NotificationSpotify extends Component<
   NotificationSpotifyProps,
   NotificationSpotifyState
 > {
+  static contextType = SpotifyServiceContext;
   static defaultProps = {
     refresh_interval: Duration.fromObject({ minutes: 1 }),
   };
+
+  private spotify_service?: SpotifyService;
+  private _timer?: Subscription;
+
   constructor(
     props: NotificationSpotifyProps,
     state: NotificationSpotifyState,
@@ -24,11 +33,35 @@ export class NotificationSpotify extends Component<
   }
 
   componentDidMount() {
-    this.updateSpotify();
+    this.spotify_service = this.context;
+    // this.updateSpotify();
+    this._timer = timer(0, 60000).subscribe(async () => {
+      const status = await this.spotify_service?.getSpotifyStatus();
+      if (status != null) {
+        this.setState(s => ({
+          ...s,
+          // timestamp:
+          //   res.timestamp != null ? DateTime.fromMillis(res.timestamp) : null,
+          playing: status.is_playing,
+          song_name: status.item?.name,
+          artist_name: status.item?.artists
+            ?.slice(
+              0,
+              status.item?.artists.length <= 3
+                ? status.item?.artists.length
+                : 3,
+            )
+            .map(a => a.name)
+            .join(', '),
+          album_name: status.item?.album.name,
+          album_art_url: status.item?.album.images[2].url,
+        }));
+      }
+    });
   }
 
   componentWillUnmount() {
-    // TODO: stop timer
+    this._timer?.unsubscribe();
   }
 
   render() {
@@ -62,92 +95,9 @@ export class NotificationSpotify extends Component<
       </Notification>
     );
   }
-
-  async updateSpotify() {
-    const spotify_access_token_expiration = localStorage.getItem(
-      'spotify_access_token_expiration',
-    );
-    if (
-      spotify_access_token_expiration != null &&
-      Number.parseInt(spotify_access_token_expiration)
-    ) {
-    }
-
-    const res = await fetch(
-      `https://api.spotify.com/v1/me/player/currently-playing`,
-      {
-        headers: {
-          Authorization: `Bearer ${this.props.api_key}`,
-        },
-      },
-    ).then(r => r.json());
-
-    if (res.error != null && res.error.message === 'The access token expired') {
-      await this.refreshSpotifyToken();
-      // await this.updateSpotify();
-      return;
-    }
-
-    let refresh_dur = Duration.fromMillis(60 * 1000);
-    if (res.is_playing) {
-      refresh_dur = Duration.fromMillis(res.item.duration_ms - res.progress_ms);
-    }
-    setTimeout(() => this.updateSpotify(), refresh_dur.valueOf());
-
-    this.setState(state => ({
-      // timestamp:
-      //   res.timestamp != null ? DateTime.fromMillis(res.timestamp) : null,
-      playing: res.is_playing,
-      song_name: res.item?.name,
-      artist_name: (res.item?.artists as any[])
-        ?.slice(0, res.item.artists.length <= 3 ? res.item.artists.length : 3)
-        .map(a => a.name)
-        .join(', '),
-      album_name: res.item?.album.name,
-      album_art_url: res.item?.album.images[2].url,
-    }));
-    console.log(res);
-  }
-
-  async refreshSpotifyToken() {
-    const spotify_refresh_token = window.localStorage.getItem(
-      'spotify_refresh_token',
-    );
-    const res = await fetch(`https://accounts.spotify.com/api/token`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-      },
-      body: JSON.stringify({
-        refresh_token: spotify_refresh_token,
-        grant_type: 'refresh_token',
-      }),
-    }).then(r => r.json());
-
-    console.log(res);
-    window.localStorage.setItem('spotify_access_token', res.access_token);
-    window.localStorage.setItem(
-      'spotify_access_token_expiration',
-      (Date.now() + res.expires_in * 1000).toString(),
-    );
-    return res.access_token;
-  }
-
-  async getSpotifyTokenFromCode() {
-    const code = window.localStorage.getItem('spotify_code');
-    const res = await fetch(`https://api.spotify.com/v1/swap`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-      },
-      body: JSON.stringify({ code }),
-    }).then(r => r.json());
-    console.log(res);
-  }
 }
 
 export interface NotificationSpotifyProps {
-  api_key: string;
   refresh_interval?: Duration;
 }
 

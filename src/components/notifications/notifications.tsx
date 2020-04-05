@@ -70,6 +70,10 @@ export class Notifications extends Component<
       </Notification>
     ));
 
+    notifications.push(
+      <NotificationSpotify key={'spotify'}></NotificationSpotify>,
+    );
+
     return (
       <div className="notifications">
         {notifications.sort((a, b) => {

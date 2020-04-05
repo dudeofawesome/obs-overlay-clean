@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { DateTime } from 'luxon';
 
+import { InfrequentClock } from '../infrequent-clock/infrequent-clock';
+
 import './notification.scss';
 
 export class Notification extends Component<NotificationProps> {
@@ -21,9 +23,9 @@ export class Notification extends Component<NotificationProps> {
           <div className="name">{this.props.name}</div>
           <div className="spacer"></div>
           {this.props.time ? (
-            <div className="time">
+            <InfrequentClock className="time">
               {this.props.time.toRelative({ style: 'narrow' })}
-            </div>
+            </InfrequentClock>
           ) : null}
         </div>
         <div className="body">{this.props.children}</div>

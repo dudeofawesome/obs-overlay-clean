@@ -326,6 +326,7 @@ export interface SpotifyTrack {
 
 export interface SpotifyEpisode {
   album: SpotifyAlbum;
+  artists: SpotifyArtist[];
   [key: string]: any | undefined;
 }
 
