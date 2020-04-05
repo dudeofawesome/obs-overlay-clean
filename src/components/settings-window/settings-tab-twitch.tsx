@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
@@ -15,6 +15,8 @@ import { TwitchServiceContext } from '../../context';
 import './settings-window.scss';
 
 export function SettingsTabTwitch() {
+  const [test_msg, setTestMsg] = useState('');
+
   return (
     <TrueCenter>
       <Row>
@@ -34,13 +36,29 @@ export function SettingsTabTwitch() {
               <Column>
                 <Button
                   variant="contained"
-                  onClick={() => twitch_service.authenticate()}
+                  onClick={async () => {
+                    await twitch_service.createClient();
+                    await twitch_service.authenticate();
+                  }}
                 >
                   Authenticate
                 </Button>
-                <Button onClick={() => twitch_service.subscribe()}>
+                <Button
+                  onClick={async () => {
+                    await twitch_service
+                      .subscribe()
+                      .then(() => 'Success')
+                      .catch(e => e);
+                    setTestMsg(
+                      `${
+                        (await twitch_service.getFollowers()).total
+                      } followers`,
+                    );
+                  }}
+                >
                   Test Twitch
                 </Button>
+                <div>{test_msg}</div>
               </Column>
             )}
           </TwitchServiceContext.Consumer>
@@ -117,11 +135,11 @@ function APISettings() {
       {twitch_service => (
         <Column>
           <TextField
-            id="user_id"
-            label="Twitch User ID"
+            id="user_name"
+            label="Twitch Username"
             required
-            defaultValue={twitch_service.user_id ?? ''}
-            onChange={e => (twitch_service.user_id = e.target.value)}
+            defaultValue={twitch_service.user_name ?? ''}
+            onChange={e => (twitch_service.user_name = e.target.value)}
           />
           <TextField
             id="client_id"

@@ -1,10 +1,11 @@
-import TwitchClient from 'twitch';
+import TwitchClient, { HelixFollow } from 'twitch';
 import PubSubClient from 'twitch-pubsub-client';
 import {
   PubSubListener,
   PubSubSubscriptionMessage,
 } from 'twitch-pubsub-client';
-import { DateTime } from 'luxon';
+import { DateTime, Duration } from 'luxon';
+import { Subject, timer, Subscription } from 'rxjs';
 
 export class TwitchService {
   private _settings = new _TwitchSettings();
@@ -12,11 +13,30 @@ export class TwitchService {
   private _client?: TwitchClient;
   private _pubsub_client?: PubSubClient;
   private _subscriber_listener?: PubSubListener<PubSubSubscriptionMessage>;
+  private _follower_check_timer?: Subscription;
 
-  constructor() {
-    this.subscribe()
-      .then(v => console.log(v))
-      .catch(err => console.log(err));
+  private readonly _scopes = ['chat:read', 'channel_subscriptions'];
+
+  private _new_follower?: Subject<HelixFollow>;
+  private _new_subscriber?: Subject<PubSubSubscriptionMessage>;
+  private _new_donation?: Subject<any>;
+  private _new_donation_bits?: Subject<any>;
+  private _new_raid?: Subject<any>;
+
+  public get new_follower() {
+    return this._new_follower;
+  }
+  public get new_subscriber() {
+    return this._new_subscriber;
+  }
+  public get new_donation() {
+    return this._new_donation;
+  }
+  public get new_donation_bits() {
+    return this._new_donation_bits;
+  }
+  public get new_raid() {
+    return this._new_raid;
   }
 
   public get client_id(): string | undefined {
@@ -55,10 +75,17 @@ export class TwitchService {
   }
 
   public get user_id(): string | undefined {
-    return this._getterString('user_id') ?? 'DudeOfAwesome';
+    return this._getterString('user_id');
   }
   public set user_id(v: string | undefined) {
     this._setterString('user_id', v);
+  }
+
+  public get user_name(): string | undefined {
+    return this._getterString('user_name') ?? 'DudeOfAwesome';
+  }
+  public set user_name(v: string | undefined) {
+    this._setterString('user_name', v);
   }
 
   public get notify_new_followers(): boolean | undefined {
@@ -66,6 +93,13 @@ export class TwitchService {
   }
   public set notify_new_followers(v: boolean | undefined) {
     this._setterBool('notify_new_followers', v);
+  }
+
+  public get notify_new_followers_freq(): Duration | undefined {
+    return this._getterDuration('notify_new_followers_freq');
+  }
+  public set notify_new_followers_freq(v: Duration | undefined) {
+    this._setterDuration('notify_new_followers_freq', v);
   }
 
   public get notify_new_subscribers(): boolean | undefined {
@@ -123,6 +157,17 @@ export class TwitchService {
     }
     return this._settings[key] as DateTime | undefined;
   }
+  private _getterDuration(key: keyof _TwitchSettings): Duration | undefined {
+    if (this._settings[key] == null) {
+      const val = localStorage.getItem(`twitch_${key}`);
+      if (val != null) {
+        return Duration.fromMillis(parseInt(val));
+      } else {
+        return undefined;
+      }
+    }
+    return this._settings[key] as Duration | undefined;
+  }
 
   private _setterString(
     key: keyof _TwitchSettings,
@@ -157,6 +202,17 @@ export class TwitchService {
       localStorage.removeItem(`twitch_${key}`);
     }
   }
+  private _setterDuration(
+    key: keyof _TwitchSettings,
+    value: Duration | undefined,
+  ): void {
+    this._settings[key] = value as any;
+    if (value != null) {
+      localStorage.setItem(`twitch_${key}`, value.valueOf() + '');
+    } else {
+      localStorage.removeItem(`twitch_${key}`);
+    }
+  }
 
   async authenticate() {
     const redirect_url = `${window.location.origin}/oauth/twitch`;
@@ -186,7 +242,11 @@ export class TwitchService {
     return new Promise((resolve, reject) => {
       const redirect_url = `${window.location.origin}/oauth/twitch`;
       const login_window = window.open(
-        `https://id.twitch.tv/oauth2/authorize?client_id=${this.client_id}&response_type=code&redirect_uri=${redirect_url}&scope=chat:read`,
+        `https://id.twitch.tv/oauth2/authorize?client_id=${
+          this.client_id
+        }&response_type=code&redirect_uri=${redirect_url}&scope=${this._scopes.join(
+          '+',
+        )}`,
         'Twitch Login',
         'toolbar=no, menubar=no, width=600, height=700',
       );
@@ -225,24 +285,20 @@ export class TwitchService {
     });
   }
 
-  async subscribe() {
+  async createClient() {
     if (this.client_id == null) {
       throw new Error('client_id is null');
-    } else if (this.user_id == null) {
+    } else if (this.user_name == null) {
       throw new Error('user_id is null');
     } else if (this.client_secret == null) {
       throw new Error('client_secret is null');
     } else if (this.refresh_token == null) {
       throw new Error('refresh_token is null');
     } else {
-      // this._client = TwitchClient.withClientCredentials(
-      //   this.client_id,
-      //   this.access_token,
-      // );
       this._client = TwitchClient.withCredentials(
         this.client_id,
         this.access_token,
-        undefined,
+        this._scopes,
         {
           clientSecret: this.client_secret,
           refreshToken: this.refresh_token,
@@ -253,20 +309,117 @@ export class TwitchService {
         },
       );
 
-      this._pubsub_client = new PubSubClient();
-      await this._pubsub_client.registerUserListener(this._client);
+      const user = await this._client.helix.users.getUserByName(this.user_name);
+      console.log(user);
 
-      this._subscriber_listener = await this._pubsub_client.onSubscription(
-        this.user_id,
-        message => {
-          console.log(`${message.userDisplayName} just subscribed!`);
-        },
-      );
+      if (user == null) {
+        throw new Error(`Couldn't find user ${this.user_name}`);
+      } else {
+        this.user_id = user.id;
+      }
+    }
+  }
+
+  async subscribe() {
+    if (this._client == null) {
+      console.warn('_client is null. trying to create');
+      await this.createClient();
+      if (this._client == null) {
+        throw new Error('_client is null');
+      }
+    }
+    if (this.user_id == null) {
+      throw new Error('user_id is null');
+    } else if (this.user_name == null) {
+      throw new Error('user_name is null');
+    } else {
+      if (this.notify_new_followers) {
+        if (this.notify_new_followers_freq == null) {
+          throw new Error('notify_new_followers_freq is null');
+        }
+        if (this._new_follower == null) {
+          this._new_follower = new Subject();
+        }
+
+        const freq = this.notify_new_followers_freq.valueOf();
+        if (this._follower_check_timer != null) {
+          this._follower_check_timer.unsubscribe();
+        }
+        this._follower_check_timer = timer(freq, freq).subscribe(async () => {
+          const newest_followers = await this.getFollowers();
+          console.log(newest_followers);
+          const oldest_in_last_cycle_i = newest_followers.data.findIndex(
+            follower =>
+              DateTime.local().minus(freq) >
+              DateTime.fromJSDate(follower.followDate),
+          );
+          const new_followers = newest_followers.data.slice(
+            0,
+            oldest_in_last_cycle_i,
+          );
+
+          console.log('NEW_FOLLOWERS');
+          console.log(new_followers);
+
+          if (new_followers.length !== 0) {
+            const a = timer(0, freq / new_followers.length).subscribe(i => {
+              console.log(i);
+              if (new_followers[i] == null) {
+                throw new Error('new_followers index exceeded');
+              }
+              this._new_follower?.next(new_followers[i]);
+              if (i >= new_followers.length - 1) {
+                a.unsubscribe();
+              }
+            });
+          }
+        });
+      }
+      if (this.notify_new_subscribers) {
+        this._pubsub_client = new PubSubClient();
+        await this._pubsub_client.registerUserListener(this._client);
+
+        if (this._new_subscriber == null) {
+          this._new_subscriber = new Subject();
+        }
+
+        this._subscriber_listener = await this._pubsub_client.onSubscription(
+          this.user_id,
+          message => {
+            console.log(message);
+            this._new_subscriber?.next(message);
+            console.log(`${message.userDisplayName} just subscribed!`);
+          },
+        );
+      }
+      if (this.notify_donations) {
+        console.warn('Donation notifications are not supported at this time');
+      }
+      if (this.notify_raids) {
+      }
     }
   }
 
   unsubscribe() {
     this._subscriber_listener?.remove();
+  }
+
+  async getFollowers() {
+    if (this._client == null) {
+      throw new Error('_client is null');
+    } else if (this.user_id == null) {
+      throw new Error('user_id is null');
+    }
+
+    const followers = await this._client.helix.users.getFollows({
+      followedUser: this.user_id,
+    });
+    if (followers == null) {
+      throw new Error('followers is null');
+    }
+
+    console.log(followers);
+    return followers;
   }
 }
 
@@ -277,8 +430,10 @@ class _TwitchSettings {
   access_token_exp?: DateTime;
   refresh_token?: string;
   user_id?: string;
+  user_name?: string;
 
   notify_new_followers?: boolean;
+  notify_new_followers_freq?: Duration;
   notify_new_subscribers?: boolean;
   notify_donations?: boolean;
   notify_donations_bits?: boolean;
