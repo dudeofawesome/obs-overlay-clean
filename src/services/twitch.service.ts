@@ -362,16 +362,18 @@ export class TwitchService {
           console.log(new_followers);
 
           if (new_followers.length !== 0) {
-            const a = timer(0, freq / new_followers.length).subscribe(i => {
-              console.log(i);
-              if (new_followers[i] == null) {
-                throw new Error('new_followers index exceeded');
-              }
-              this._new_follower?.next(new_followers[i]);
-              if (i >= new_followers.length - 1) {
-                a.unsubscribe();
-              }
-            });
+            const a = timer(0, freq / (new_followers.length + 1)).subscribe(
+              i => {
+                console.log(i);
+                if (new_followers[i] == null) {
+                  throw new Error('new_followers index exceeded');
+                }
+                this._new_follower?.next(new_followers[i]);
+                if (i >= new_followers.length - 1) {
+                  a.unsubscribe();
+                }
+              },
+            );
           }
         });
       }
