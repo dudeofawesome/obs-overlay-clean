@@ -161,7 +161,12 @@ export class TwitchService {
     const redirect_url = `${window.location.origin}/oauth/twitch`;
     const auth_code = await this.launchTwitchOAuth();
     const res = await fetch(
-      `https://id.twitch.tv/oauth2/token?client_id=${this.client_id}&client_secret=${this.client_secret}&code=${auth_code}&grant_type=authorization_code&redirect_uri=${redirect_url}`,
+      `https://id.twitch.tv/oauth2/token?` +
+        `client_id=${this.client_id}&` +
+        `client_secret=${this.client_secret}&` +
+        `code=${auth_code}&` +
+        `grant_type=authorization_code&` +
+        `redirect_uri=${redirect_url}`,
       { method: 'POST' },
     )
       .then(r => r.json())
