@@ -7,6 +7,17 @@ import {
 import { DateTime, Duration } from 'luxon';
 import { Subject, timer, Subscription } from 'rxjs';
 
+import {
+  getterBool,
+  getterDateTime,
+  getterDuration,
+  getterString,
+  setterBool,
+  setterDateTime,
+  setterDuration,
+  setterString,
+} from '../utils/getter-setter';
+
 export class TwitchService {
   private _settings = new _TwitchSettings();
 
@@ -40,178 +51,170 @@ export class TwitchService {
   }
 
   public get client_id(): string | undefined {
-    return this._getterString('client_id') ?? 'pbcwgkykya4jjufuuybfl91jn2zhro';
+    return (
+      getterString<_TwitchSettings>('twitch', 'client_id', this._settings) ??
+      'pbcwgkykya4jjufuuybfl91jn2zhro'
+    );
   }
   public set client_id(v: string | undefined) {
-    this._setterString('client_id', v);
+    setterString<_TwitchSettings>('twitch', 'client_id', v, this._settings);
   }
 
   public get client_secret(): string | undefined {
-    return this._getterString('client_secret');
+    return getterString<_TwitchSettings>(
+      'twitch',
+      'client_secret',
+      this._settings,
+    );
   }
   public set client_secret(v: string | undefined) {
-    this._setterString('client_secret', v);
+    setterString<_TwitchSettings>('twitch', 'client_secret', v, this._settings);
   }
 
   public get access_token(): string | undefined {
-    return this._getterString('access_token');
+    return getterString<_TwitchSettings>(
+      'twitch',
+      'access_token',
+      this._settings,
+    );
   }
   public set access_token(v: string | undefined) {
-    this._setterString('access_token', v);
+    setterString<_TwitchSettings>('twitch', 'access_token', v, this._settings);
   }
 
   public get access_token_exp(): DateTime | undefined {
-    return this._getterDateTime('access_token_exp');
+    return getterDateTime<_TwitchSettings>(
+      'twitch',
+      'access_token_exp',
+      this._settings,
+    );
   }
   public set access_token_exp(v: DateTime | undefined) {
-    this._setterDateTime('access_token_exp', v);
+    setterDateTime<_TwitchSettings>(
+      'twitch',
+      'access_token_exp',
+      v,
+      this._settings,
+    );
   }
 
   public get refresh_token(): string | undefined {
-    return this._getterString('refresh_token');
+    return getterString<_TwitchSettings>(
+      'twitch',
+      'refresh_token',
+      this._settings,
+    );
   }
   public set refresh_token(v: string | undefined) {
-    this._setterString('refresh_token', v);
+    setterString<_TwitchSettings>('twitch', 'refresh_token', v, this._settings);
   }
 
   public get user_id(): string | undefined {
-    return this._getterString('user_id');
+    return getterString<_TwitchSettings>('twitch', 'user_id', this._settings);
   }
   public set user_id(v: string | undefined) {
-    this._setterString('user_id', v);
+    setterString<_TwitchSettings>('twitch', 'user_id', v, this._settings);
   }
 
   public get user_name(): string | undefined {
-    return this._getterString('user_name') ?? 'DudeOfAwesome';
+    return (
+      getterString<_TwitchSettings>('twitch', 'user_name', this._settings) ??
+      'DudeOfAwesome'
+    );
   }
   public set user_name(v: string | undefined) {
-    this._setterString('user_name', v);
+    setterString<_TwitchSettings>('twitch', 'user_name', v, this._settings);
   }
 
   public get notify_new_followers(): boolean | undefined {
-    return this._getterBool('notify_new_followers');
+    return getterBool<_TwitchSettings>(
+      'twitch',
+      'notify_new_followers',
+      this._settings,
+    );
   }
   public set notify_new_followers(v: boolean | undefined) {
-    this._setterBool('notify_new_followers', v);
+    setterBool<_TwitchSettings>(
+      'twitch',
+      'notify_new_followers',
+      v,
+      this._settings,
+    );
   }
 
   public get notify_new_followers_freq(): Duration | undefined {
-    return this._getterDuration('notify_new_followers_freq');
+    return getterDuration<_TwitchSettings>(
+      'twitch',
+      'notify_new_followers_freq',
+      this._settings,
+    );
   }
   public set notify_new_followers_freq(v: Duration | undefined) {
-    this._setterDuration('notify_new_followers_freq', v);
+    setterDuration<_TwitchSettings>(
+      'twitch',
+      'notify_new_followers_freq',
+      v,
+      this._settings,
+    );
   }
 
   public get notify_new_subscribers(): boolean | undefined {
-    return this._getterBool('notify_new_subscribers');
+    return getterBool<_TwitchSettings>(
+      'twitch',
+      'notify_new_subscribers',
+      this._settings,
+    );
   }
   public set notify_new_subscribers(v: boolean | undefined) {
-    this._setterBool('notify_new_subscribers', v);
+    setterBool<_TwitchSettings>(
+      'twitch',
+      'notify_new_subscribers',
+      v,
+      this._settings,
+    );
   }
 
   public get notify_donations(): boolean | undefined {
-    return this._getterBool('notify_donations');
+    return getterBool<_TwitchSettings>(
+      'twitch',
+      'notify_donations',
+      this._settings,
+    );
   }
   public set notify_donations(v: boolean | undefined) {
-    this._setterBool('notify_donations', v);
+    setterBool<_TwitchSettings>(
+      'twitch',
+      'notify_donations',
+      v,
+      this._settings,
+    );
   }
 
   public get notify_donations_bits(): boolean | undefined {
-    return this._getterBool('notify_donations_bits');
+    return getterBool<_TwitchSettings>(
+      'twitch',
+      'notify_donations_bits',
+      this._settings,
+    );
   }
   public set notify_donations_bits(v: boolean | undefined) {
-    this._setterBool('notify_donations_bits', v);
+    setterBool<_TwitchSettings>(
+      'twitch',
+      'notify_donations_bits',
+      v,
+      this._settings,
+    );
   }
 
   public get notify_raids(): boolean | undefined {
-    return this._getterBool('notify_raids');
+    return getterBool<_TwitchSettings>(
+      'twitch',
+      'notify_raids',
+      this._settings,
+    );
   }
   public set notify_raids(v: boolean | undefined) {
-    this._setterBool('notify_raids', v);
-  }
-
-  private _getterString(key: keyof _TwitchSettings): string | undefined {
-    if (this._settings[key] == null) {
-      this._settings[key] = (localStorage.getItem(`twitch_${key}`) ??
-        undefined) as any;
-    }
-    return this._settings[key] as string | undefined;
-  }
-  private _getterBool(key: keyof _TwitchSettings): boolean | undefined {
-    if (this._settings[key] == null) {
-      const v = localStorage.getItem(`twitch_${key}`);
-      if (v === 'true') this._settings[key] = true as any;
-      else if (v === 'false') this._settings[key] = false as any;
-      else this._settings[key] = undefined;
-    }
-    return this._settings[key] as boolean | undefined;
-  }
-  private _getterDateTime(key: keyof _TwitchSettings): DateTime | undefined {
-    if (this._settings[key] == null) {
-      const val = localStorage.getItem(`twitch_${key}`);
-      if (val != null) {
-        return DateTime.fromMillis(parseInt(val));
-      } else {
-        return undefined;
-      }
-    }
-    return this._settings[key] as DateTime | undefined;
-  }
-  private _getterDuration(key: keyof _TwitchSettings): Duration | undefined {
-    if (this._settings[key] == null) {
-      const val = localStorage.getItem(`twitch_${key}`);
-      if (val != null) {
-        return Duration.fromMillis(parseInt(val));
-      } else {
-        return undefined;
-      }
-    }
-    return this._settings[key] as Duration | undefined;
-  }
-
-  private _setterString(
-    key: keyof _TwitchSettings,
-    value: string | undefined,
-  ): void {
-    this._settings[key] = value as any;
-    if (value != null) {
-      localStorage.setItem(`twitch_${key}`, value);
-    } else {
-      localStorage.removeItem(`twitch_${key}`);
-    }
-  }
-  private _setterBool(
-    key: keyof _TwitchSettings,
-    value: boolean | undefined,
-  ): void {
-    this._settings[key] = value as any;
-    if (value != null) {
-      localStorage.setItem(`twitch_${key}`, value ? 'true' : 'false');
-    } else {
-      localStorage.removeItem(`twitch_${key}`);
-    }
-  }
-  private _setterDateTime(
-    key: keyof _TwitchSettings,
-    value: DateTime | undefined,
-  ): void {
-    this._settings[key] = value as any;
-    if (value != null) {
-      localStorage.setItem(`twitch_${key}`, value.toMillis() + '');
-    } else {
-      localStorage.removeItem(`twitch_${key}`);
-    }
-  }
-  private _setterDuration(
-    key: keyof _TwitchSettings,
-    value: Duration | undefined,
-  ): void {
-    this._settings[key] = value as any;
-    if (value != null) {
-      localStorage.setItem(`twitch_${key}`, value.valueOf() + '');
-    } else {
-      localStorage.removeItem(`twitch_${key}`);
-    }
+    setterBool<_TwitchSettings>('twitch', 'notify_raids', v, this._settings);
   }
 
   async authenticate() {
@@ -241,28 +244,44 @@ export class TwitchService {
   launchTwitchOAuth(hidden: boolean = false): Promise<string> {
     return new Promise((resolve, reject) => {
       const redirect_url = `${window.location.origin}/oauth/twitch`;
-      const login_window = window.open(
-        `https://id.twitch.tv/oauth2/authorize?client_id=${
-          this.client_id
-        }&response_type=code&redirect_uri=${redirect_url}&scope=${this._scopes.join(
-          '+',
-        )}`,
-        'Twitch Login',
-        'toolbar=no, menubar=no, width=600, height=700',
-      );
+      const url =
+        `https://id.twitch.tv/oauth2/authorize?client_id=${this.client_id}&` +
+        `response_type=code&` +
+        `redirect_uri=${redirect_url}&` +
+        `scope=${this._scopes.join('+')}`;
+      // const login_window = window.open(
+      //   url,
+      //   'Twitch Login',
+      //   'toolbar=no, menubar=no, width=600, height=700',
+      // );
+      const login_iframe = document.createElement('iframe');
+      login_iframe.src = url;
+      document.body.appendChild(login_iframe);
 
       let timeout_id: number;
 
       if (!hidden) {
-        login_window?.focus();
+        // login_window?.focus();
+        login_iframe.className = 'window active';
+        login_iframe.style.position = 'fixed';
+        login_iframe.style.top = '0px';
+        login_iframe.style.left = '0px';
+        login_iframe.style.marginTop = '50%';
+        login_iframe.style.marginLeft = '50%';
+        login_iframe.style.width = '400px';
+        login_iframe.style.height = '500px';
+        login_iframe.style.transform = 'translate(-50%, -50%)';
       } else {
+        // login_iframe.style.display = 'none';
         timeout_id = window.setTimeout(() => {
           reject(new Error('Timed out'));
-          login_window?.close();
+          // login_window?.close();
+          login_iframe.remove();
         }, 5000);
       }
 
       const receiveOAuthResultMessage = (event: MessageEvent) => {
+        // debugger;
         console.log(event);
         if (
           typeof event.data === 'object' &&
@@ -271,6 +290,8 @@ export class TwitchService {
           if (timeout_id != null) {
             window.clearTimeout(timeout_id);
           }
+
+          login_iframe.remove();
           window.removeEventListener('message', receiveOAuthResultMessage);
 
           if (event.data.auth_code != null) {

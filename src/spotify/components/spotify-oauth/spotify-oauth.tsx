@@ -39,6 +39,14 @@ export function SpotifyOAuth() {
           href: window.location.href,
         });
         window.close();
+      } else if (window.parent) {
+        window.parent.postMessage(
+          {
+            type: 'Spotify OAuth',
+            href: window.location.href,
+          },
+          '*',
+        );
       } else {
         history.push('/');
       }

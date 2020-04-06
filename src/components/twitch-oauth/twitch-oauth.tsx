@@ -30,6 +30,14 @@ export function TwitchOAuth() {
           auth_code,
         });
         window.close();
+      } else if (window.parent) {
+        window.parent.postMessage(
+          {
+            type: 'Twitch OAuth',
+            auth_code,
+          },
+          '*',
+        );
       } else {
         history.push('/');
       }
