@@ -113,9 +113,11 @@ export class TwitchService {
   }
 
   public get notify_new_followers_freq(): Duration | undefined {
-    return getterDuration<_TwitchSettings>(
-      'notify_new_followers_freq',
-      this._settings,
+    return (
+      getterDuration<_TwitchSettings>(
+        'notify_new_followers_freq',
+        this._settings,
+      ) ?? Duration.fromMillis(60000)
     );
   }
   public set notify_new_followers_freq(v: Duration | undefined) {
