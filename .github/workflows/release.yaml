@@ -13,6 +13,7 @@ jobs:
         run: |
           yarn install
           yarn run build
+          cp build/index.html build/404.html
 
       - name: Install SSH Client 🔑
         uses: webfactory/ssh-agent@v0.2.0
