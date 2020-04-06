@@ -37,8 +37,8 @@ export function SettingsTabTwitch() {
                 <Button
                   variant="contained"
                   onClick={async () => {
-                    await twitch_service.createClient();
                     await twitch_service.authenticate();
+                    await twitch_service.createClient();
                   }}
                 >
                   Authenticate
