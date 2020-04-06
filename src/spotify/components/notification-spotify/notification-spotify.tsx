@@ -1,13 +1,15 @@
 import React, { Component } from 'react';
 import { Duration, DateTime } from 'luxon';
 import { FaPlay, FaPause } from 'react-icons/fa';
+import { timer, Subscription } from 'rxjs';
 
 import { SpotifyServiceContext } from '../../../context';
 import { Notification } from '../../../components/notification/notification';
+import { Row } from '../../../components/row/row';
+import { Column } from '../../../components/column/column';
 import { SpotifyService } from '../../services/spotify.service';
 
 import './notification-spotify.scss';
-import { timer, Subscription } from 'rxjs';
 
 export class NotificationSpotify extends Component<
   NotificationSpotifyProps,
@@ -73,7 +75,7 @@ export class NotificationSpotify extends Component<
         icon_url="https://lh3.googleusercontent.com/UrY7BAZ-XfXGpfkeWg0zCCeo-7ras4DCoRalC_WXXWTK9q5b0Iw7B0YQMsVxZaNB7DM=s180"
         visible={this.state.song_name != null}
       >
-        <div className="row status">
+        <Row className="row status">
           {/* <img
             className="album-art"
             src={this.state.album_art_url}
@@ -85,15 +87,15 @@ export class NotificationSpotify extends Component<
               backgroundImage: `url('${this.state.album_art_url}')`,
             }}
           ></div>
-          <div className="column info">
+          <Column className="column info" style={{ justifyContent: 'center' }}>
             <div className="song-name">{this.state.song_name}</div>
             <div className="artist-name">{this.state.artist_name}</div>
             <div className="album-name">{this.state.album_name}</div>
-          </div>
+          </Column>
           <div className="play-status">
             {this.state.playing ? <FaPlay /> : <FaPause />}
           </div>
-        </div>
+        </Row>
       </Notification>
     );
   }
