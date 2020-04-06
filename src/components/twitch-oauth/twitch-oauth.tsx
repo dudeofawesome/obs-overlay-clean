@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 
-import './twitch-oauth.scss';
-
 export function TwitchOAuth() {
   const history = useHistory();
   const [error, setError] = useState('');

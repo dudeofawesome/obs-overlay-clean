@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, ComponentProps } from 'react';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Tabs from '@material-ui/core/Tabs';
@@ -8,13 +8,17 @@ import IconClose from '@material-ui/icons/Close';
 import IconButton from '@material-ui/core/IconButton';
 import { FaSpotify, FaCamera, FaTwitch } from 'react-icons/fa';
 
+import { SettingsTabCamera } from './settings-tab-camera';
 import { SettingsTabSpotify } from './settings-tab-spotify';
 import { SettingsTabTwitch } from './settings-tab-twitch';
 
 import './settings-window.scss';
 import '../window/window.scss';
 
-export class SettingsWindow extends Component<{}, SettingsWindowState> {
+export class SettingsWindow extends Component<
+  SettingsWindowProps,
+  SettingsWindowState
+> {
   readonly tabs: { title: string; icon: any }[] = [
     { title: 'Camera', icon: <FaCamera /> },
     { title: 'Spotify', icon: <FaSpotify /> },
@@ -24,23 +28,23 @@ export class SettingsWindow extends Component<{}, SettingsWindowState> {
   constructor(props: {}) {
     super(props);
     this.state = {
-      selected_tab: 2,
+      selected_tab: 0,
     };
   }
 
-  close() {}
-
   render() {
     return (
-      <Box className="window active">
-        {/* <Row>x</Row> */}
+      <Box className="window">
         <AppBar position="relative">
           <Toolbar variant="dense">
             <IconButton
               aria-label="close"
               edge="start"
               color="inherit"
-              onClick={() => this.close()}
+              onClick={e => {
+                e.stopPropagation();
+                this.props?.onClose?.();
+              }}
             >
               <IconClose />
             </IconButton>
@@ -64,7 +68,7 @@ export class SettingsWindow extends Component<{}, SettingsWindowState> {
         {
           [
             <Box padding="20px 15px">
-              <div>Camera {this.state.selected_tab}</div>
+              <SettingsTabCamera />
             </Box>,
             <Box padding="20px 15px">
               <SettingsTabSpotify />
@@ -77,6 +81,10 @@ export class SettingsWindow extends Component<{}, SettingsWindowState> {
       </Box>
     );
   }
+}
+
+interface SettingsWindowProps extends ComponentProps<'div'> {
+  onClose?: () => void;
 }
 
 interface SettingsWindowState {

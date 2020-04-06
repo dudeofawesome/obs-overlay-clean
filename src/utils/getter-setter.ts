@@ -1,36 +1,33 @@
 import { DateTime, Duration } from 'luxon';
 
-export function getterString<T>(
-  something: string,
+export function getterString<T extends { prefix: string }>(
   key: keyof T,
   store: T,
 ): string | undefined {
   if (store[key] == null) {
-    store[key] = (localStorage.getItem(`${something}_${key}`) ??
+    store[key] = (localStorage.getItem(`${store.prefix}_${key}`) ??
       undefined) as any;
   }
   return store[key] as any;
 }
-export function getterBool<T>(
-  something: string,
+export function getterBool<T extends { prefix: string }>(
   key: keyof T,
   store: T,
 ): boolean | undefined {
   if (store[key] == null) {
-    const v = localStorage.getItem(`${something}_${key}`);
+    const v = localStorage.getItem(`${store.prefix}_${key}`);
     if (v === 'true') store[key] = true as any;
     else if (v === 'false') store[key] = false as any;
     else store[key] = undefined as any;
   }
   return store[key] as any;
 }
-export function getterDateTime<T>(
-  something: string,
+export function getterDateTime<T extends { prefix: string }>(
   key: keyof T,
   store: T,
 ): DateTime | undefined {
   if (store[key] == null) {
-    const val = localStorage.getItem(`${something}_${key}`);
+    const val = localStorage.getItem(`${store.prefix}_${key}`);
     if (val != null) {
       return DateTime.fromMillis(parseInt(val));
     } else {
@@ -39,13 +36,12 @@ export function getterDateTime<T>(
   }
   return store[key] as any;
 }
-export function getterDuration<T>(
-  something: string,
+export function getterDuration<T extends { prefix: string }>(
   key: keyof T,
   store: T,
 ): Duration | undefined {
   if (store[key] == null) {
-    const val = localStorage.getItem(`${something}_${key}`);
+    const val = localStorage.getItem(`${store.prefix}_${key}`);
     if (val != null) {
       return Duration.fromMillis(parseInt(val));
     } else {
@@ -55,55 +51,51 @@ export function getterDuration<T>(
   return store[key] as any;
 }
 
-export function setterString<T>(
-  something: string,
+export function setterString<T extends { prefix: string }>(
   key: keyof T,
   value: string | undefined,
   store: T,
 ): void {
   store[key] = value as any;
   if (value != null) {
-    localStorage.setItem(`${something}_${key}`, value);
+    localStorage.setItem(`${store.prefix}_${key}`, value);
   } else {
-    localStorage.removeItem(`${something}_${key}`);
+    localStorage.removeItem(`${store.prefix}_${key}`);
   }
 }
-export function setterBool<T>(
-  something: string,
+export function setterBool<T extends { prefix: string }>(
   key: keyof T,
   value: boolean | undefined,
   store: T,
 ): void {
   store[key] = value as any;
   if (value != null) {
-    localStorage.setItem(`${something}_${key}`, value ? 'true' : 'false');
+    localStorage.setItem(`${store.prefix}_${key}`, value ? 'true' : 'false');
   } else {
-    localStorage.removeItem(`${something}_${key}`);
+    localStorage.removeItem(`${store.prefix}_${key}`);
   }
 }
-export function setterDateTime<T>(
-  something: string,
+export function setterDateTime<T extends { prefix: string }>(
   key: keyof T,
   value: DateTime | undefined,
   store: T,
 ): void {
   store[key] = value as any;
   if (value != null) {
-    localStorage.setItem(`${something}_${key}`, value.toMillis() + '');
+    localStorage.setItem(`${store.prefix}_${key}`, value.toMillis() + '');
   } else {
-    localStorage.removeItem(`${something}_${key}`);
+    localStorage.removeItem(`${store.prefix}_${key}`);
   }
 }
-export function setterDuration<T>(
-  something: string,
+export function setterDuration<T extends { prefix: string }>(
   key: keyof T,
   value: Duration | undefined,
   store: T,
 ): void {
   store[key] = value as any;
   if (value != null) {
-    localStorage.setItem(`${something}_${key}`, value.valueOf() + '');
+    localStorage.setItem(`${store.prefix}_${key}`, value.valueOf() + '');
   } else {
-    localStorage.removeItem(`${something}_${key}`);
+    localStorage.removeItem(`${store.prefix}_${key}`);
   }
 }

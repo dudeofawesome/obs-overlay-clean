@@ -52,106 +52,74 @@ export class TwitchService {
 
   public get client_id(): string | undefined {
     return (
-      getterString<_TwitchSettings>('twitch', 'client_id', this._settings) ??
+      getterString<_TwitchSettings>('client_id', this._settings) ??
       'pbcwgkykya4jjufuuybfl91jn2zhro'
     );
   }
   public set client_id(v: string | undefined) {
-    setterString<_TwitchSettings>('twitch', 'client_id', v, this._settings);
+    setterString<_TwitchSettings>('client_id', v, this._settings);
   }
 
   public get client_secret(): string | undefined {
-    return getterString<_TwitchSettings>(
-      'twitch',
-      'client_secret',
-      this._settings,
-    );
+    return getterString<_TwitchSettings>('client_secret', this._settings);
   }
   public set client_secret(v: string | undefined) {
-    setterString<_TwitchSettings>('twitch', 'client_secret', v, this._settings);
+    setterString<_TwitchSettings>('client_secret', v, this._settings);
   }
 
   public get access_token(): string | undefined {
-    return getterString<_TwitchSettings>(
-      'twitch',
-      'access_token',
-      this._settings,
-    );
+    return getterString<_TwitchSettings>('access_token', this._settings);
   }
   public set access_token(v: string | undefined) {
-    setterString<_TwitchSettings>('twitch', 'access_token', v, this._settings);
+    setterString<_TwitchSettings>('access_token', v, this._settings);
   }
 
   public get access_token_exp(): DateTime | undefined {
-    return getterDateTime<_TwitchSettings>(
-      'twitch',
-      'access_token_exp',
-      this._settings,
-    );
+    return getterDateTime<_TwitchSettings>('access_token_exp', this._settings);
   }
   public set access_token_exp(v: DateTime | undefined) {
-    setterDateTime<_TwitchSettings>(
-      'twitch',
-      'access_token_exp',
-      v,
-      this._settings,
-    );
+    setterDateTime<_TwitchSettings>('access_token_exp', v, this._settings);
   }
 
   public get refresh_token(): string | undefined {
-    return getterString<_TwitchSettings>(
-      'twitch',
-      'refresh_token',
-      this._settings,
-    );
+    return getterString<_TwitchSettings>('refresh_token', this._settings);
   }
   public set refresh_token(v: string | undefined) {
-    setterString<_TwitchSettings>('twitch', 'refresh_token', v, this._settings);
+    setterString<_TwitchSettings>('refresh_token', v, this._settings);
   }
 
   public get user_id(): string | undefined {
-    return getterString<_TwitchSettings>('twitch', 'user_id', this._settings);
+    return getterString<_TwitchSettings>('user_id', this._settings);
   }
   public set user_id(v: string | undefined) {
-    setterString<_TwitchSettings>('twitch', 'user_id', v, this._settings);
+    setterString<_TwitchSettings>('user_id', v, this._settings);
   }
 
   public get user_name(): string | undefined {
     return (
-      getterString<_TwitchSettings>('twitch', 'user_name', this._settings) ??
+      getterString<_TwitchSettings>('user_name', this._settings) ??
       'DudeOfAwesome'
     );
   }
   public set user_name(v: string | undefined) {
-    setterString<_TwitchSettings>('twitch', 'user_name', v, this._settings);
+    setterString<_TwitchSettings>('user_name', v, this._settings);
   }
 
   public get notify_new_followers(): boolean | undefined {
-    return getterBool<_TwitchSettings>(
-      'twitch',
-      'notify_new_followers',
-      this._settings,
-    );
+    return getterBool<_TwitchSettings>('notify_new_followers', this._settings);
   }
   public set notify_new_followers(v: boolean | undefined) {
-    setterBool<_TwitchSettings>(
-      'twitch',
-      'notify_new_followers',
-      v,
-      this._settings,
-    );
+    setterBool<_TwitchSettings>('notify_new_followers', v, this._settings);
   }
 
   public get notify_new_followers_freq(): Duration | undefined {
     return getterDuration<_TwitchSettings>(
-      'twitch',
       'notify_new_followers_freq',
       this._settings,
     );
   }
   public set notify_new_followers_freq(v: Duration | undefined) {
     setterDuration<_TwitchSettings>(
-      'twitch',
       'notify_new_followers_freq',
       v,
       this._settings,
@@ -160,61 +128,33 @@ export class TwitchService {
 
   public get notify_new_subscribers(): boolean | undefined {
     return getterBool<_TwitchSettings>(
-      'twitch',
       'notify_new_subscribers',
       this._settings,
     );
   }
   public set notify_new_subscribers(v: boolean | undefined) {
-    setterBool<_TwitchSettings>(
-      'twitch',
-      'notify_new_subscribers',
-      v,
-      this._settings,
-    );
+    setterBool<_TwitchSettings>('notify_new_subscribers', v, this._settings);
   }
 
   public get notify_donations(): boolean | undefined {
-    return getterBool<_TwitchSettings>(
-      'twitch',
-      'notify_donations',
-      this._settings,
-    );
+    return getterBool<_TwitchSettings>('notify_donations', this._settings);
   }
   public set notify_donations(v: boolean | undefined) {
-    setterBool<_TwitchSettings>(
-      'twitch',
-      'notify_donations',
-      v,
-      this._settings,
-    );
+    setterBool<_TwitchSettings>('notify_donations', v, this._settings);
   }
 
   public get notify_donations_bits(): boolean | undefined {
-    return getterBool<_TwitchSettings>(
-      'twitch',
-      'notify_donations_bits',
-      this._settings,
-    );
+    return getterBool<_TwitchSettings>('notify_donations_bits', this._settings);
   }
   public set notify_donations_bits(v: boolean | undefined) {
-    setterBool<_TwitchSettings>(
-      'twitch',
-      'notify_donations_bits',
-      v,
-      this._settings,
-    );
+    setterBool<_TwitchSettings>('notify_donations_bits', v, this._settings);
   }
 
   public get notify_raids(): boolean | undefined {
-    return getterBool<_TwitchSettings>(
-      'twitch',
-      'notify_raids',
-      this._settings,
-    );
+    return getterBool<_TwitchSettings>('notify_raids', this._settings);
   }
   public set notify_raids(v: boolean | undefined) {
-    setterBool<_TwitchSettings>('twitch', 'notify_raids', v, this._settings);
+    setterBool<_TwitchSettings>('notify_raids', v, this._settings);
   }
 
   async authenticate() {
@@ -447,6 +387,8 @@ export class TwitchService {
 }
 
 class _TwitchSettings {
+  readonly prefix = 'twitch';
+
   client_id?: string;
   client_secret?: string;
   access_token?: string;

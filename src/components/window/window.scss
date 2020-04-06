@@ -10,9 +10,10 @@ $shadow_small_outer: 0px 0px 3px rgba(0, 0, 0, 0.44);
   overflow: hidden;
   box-shadow: $shadow_inner_highlight, $shadow_inner,
     0px 6px 16px rgba(0, 0, 0, 0.5), $shadow_small_outer;
-}
 
-.window.active {
-  box-shadow: $shadow_inner_highlight, $shadow_inner,
-    0px 22px 45px rgba(0, 0, 0, 0.5), $shadow_small_outer;
+  &:focus,
+  .active {
+    box-shadow: $shadow_inner_highlight, $shadow_inner,
+      0px 22px 45px rgba(0, 0, 0, 0.5), $shadow_small_outer;
+  }
 }

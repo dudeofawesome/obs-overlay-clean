@@ -78,7 +78,7 @@ function NotificationSettings() {
       >
         Notifications
       </Typography>
-      <TwitchServiceContext.Consumer unstable_observedBits={0b11111111}>
+      <TwitchServiceContext.Consumer>
         {twitch_service =>
           [
             {

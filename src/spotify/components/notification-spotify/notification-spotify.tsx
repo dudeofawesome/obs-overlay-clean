@@ -36,26 +36,28 @@ export class NotificationSpotify extends Component<
     this.spotify_service = this.context;
     // this.updateSpotify();
     this._timer = timer(0, 60000).subscribe(async () => {
-      const status = await this.spotify_service?.getSpotifyStatus();
-      if (status != null) {
-        this.setState(s => ({
-          ...s,
-          // timestamp:
-          //   res.timestamp != null ? DateTime.fromMillis(res.timestamp) : null,
-          playing: status.is_playing,
-          song_name: status.item?.name,
-          artist_name: status.item?.artists
-            ?.slice(
-              0,
-              status.item?.artists.length <= 3
-                ? status.item?.artists.length
-                : 3,
-            )
-            .map(a => a.name)
-            .join(', '),
-          album_name: status.item?.album.name,
-          album_art_url: status.item?.album.images[2].url,
-        }));
+      if (this.spotify_service?.enabled) {
+        const status = await this.spotify_service.getSpotifyStatus();
+        if (status != null) {
+          this.setState(s => ({
+            ...s,
+            // timestamp:
+            //   res.timestamp != null ? DateTime.fromMillis(res.timestamp) : null,
+            playing: status.is_playing,
+            song_name: status.item?.name,
+            artist_name: status.item?.artists
+              ?.slice(
+                0,
+                status.item?.artists.length <= 3
+                  ? status.item?.artists.length
+                  : 3,
+              )
+              .map(a => a.name)
+              .join(', '),
+            album_name: status.item?.album.name,
+            album_art_url: status.item?.album.images[2].url,
+          }));
+        }
       }
     });
   }

@@ -28,10 +28,8 @@ export function SpotifyOAuth() {
       console.log(access_token, expires_in);
 
       const spotify_service = new SpotifyService();
-      spotify_service.spotify_auth_token = access_token;
-      spotify_service.spotify_auth_token_exp = DateTime.local().plus(
-        expires_in * 1000,
-      );
+      spotify_service.auth_token = access_token;
+      spotify_service.auth_token_exp = DateTime.local().plus(expires_in * 1000);
 
       if (window.opener) {
         window.opener.postMessage({

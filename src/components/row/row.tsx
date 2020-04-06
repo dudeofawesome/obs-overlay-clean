@@ -1,10 +1,11 @@
-import * as React from 'react';
-import { Props } from 'react';
+import React, { ComponentProps } from 'react';
 
-export function Row(props: Props<void>) {
+export function Row(props: ComponentProps<'div'>) {
   return (
     <div
+      {...props}
       style={{
+        ...props.style,
         display: 'flex',
         flexDirection: 'row',
       }}

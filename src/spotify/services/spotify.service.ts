@@ -14,109 +14,96 @@ export class SpotifyService {
   private _settings = new _SpotifySettings();
 
   public set enabled(v: boolean | undefined) {
-    setterBool<_SpotifySettings>('spotify', 'enabled', v, this._settings);
+    setterBool<_SpotifySettings>('enabled', v, this._settings);
   }
   public get enabled(): boolean | undefined {
-    return getterBool<_SpotifySettings>('spotify', 'enabled', this._settings);
+    return getterBool<_SpotifySettings>('enabled', this._settings);
   }
 
-  public set spotify_client_id(v: string | undefined) {
-    setterString<_SpotifySettings>('spotify', 'client_id', v, this._settings);
+  public set client_id(v: string | undefined) {
+    setterString<_SpotifySettings>('client_id', v, this._settings);
   }
-  public get spotify_client_id(): string | undefined {
+  public get client_id(): string | undefined {
     return (
-      getterString<_SpotifySettings>('spotify', 'client_id', this._settings) ??
+      getterString<_SpotifySettings>('client_id', this._settings) ??
       '90f61a9875dc44a28faf437b70e8b01b'
     );
   }
 
-  public set spotify_auth_code(v: string | undefined) {
-    setterString<_SpotifySettings>('spotify', 'auth_code', v, this._settings);
+  public set auth_code(v: string | undefined) {
+    setterString<_SpotifySettings>('auth_code', v, this._settings);
   }
-  public get spotify_auth_code(): string | undefined {
-    return getterString<_SpotifySettings>(
-      'spotify',
-      'auth_code',
-      this._settings,
-    );
+  public get auth_code(): string | undefined {
+    return getterString<_SpotifySettings>('auth_code', this._settings);
   }
 
-  public set spotify_refresh_token(v: string | undefined) {
-    setterString<_SpotifySettings>(
-      'spotify',
-      'refresh_token',
-      v,
-      this._settings,
-    );
+  public set refresh_token(v: string | undefined) {
+    setterString<_SpotifySettings>('refresh_token', v, this._settings);
   }
-  public get spotify_refresh_token(): string | undefined {
-    return getterString<_SpotifySettings>(
-      'spotify',
-      'refresh_token',
-      this._settings,
-    );
+  public get refresh_token(): string | undefined {
+    return getterString<_SpotifySettings>('refresh_token', this._settings);
   }
 
-  public set spotify_auth_token(v: string | undefined) {
-    setterString<_SpotifySettings>('spotify', 'auth_token', v, this._settings);
+  public set auth_token(v: string | undefined) {
+    setterString<_SpotifySettings>('auth_token', v, this._settings);
   }
-  public get spotify_auth_token(): string | undefined {
-    return getterString<_SpotifySettings>(
-      'spotify',
-      'auth_token',
-      this._settings,
-    );
+  public get auth_token(): string | undefined {
+    return getterString<_SpotifySettings>('auth_token', this._settings);
   }
 
-  public set spotify_auth_token_exp(v: DateTime | undefined) {
-    setterDateTime<_SpotifySettings>(
-      'spotify',
-      'auth_token_exp',
-      v,
-      this._settings,
-    );
+  public set auth_token_exp(v: DateTime | undefined) {
+    setterDateTime<_SpotifySettings>('auth_token_exp', v, this._settings);
   }
-  public get spotify_auth_token_exp(): DateTime | undefined {
-    return getterDateTime<_SpotifySettings>(
-      'spotify',
-      'auth_token_exp',
-      this._settings,
-    );
+  public get auth_token_exp(): DateTime | undefined {
+    return getterDateTime<_SpotifySettings>('auth_token_exp', this._settings);
   }
 
-  async getSpotifyStatus(): Promise<SpotifyCurrentlyPlaying> {
+  async getSpotifyStatus(): Promise<SpotifyCurrentlyPlaying | undefined> {
     if (
-      this.spotify_auth_token_exp != null &&
-      this.spotify_auth_token_exp >= DateTime.local()
+      this.auth_token_exp != null &&
+      this.auth_token_exp >= DateTime.local()
     ) {
       // use auth token to get
       const res = await fetch(
         `https://api.spotify.com/v1/me/player/currently-playing`,
         {
           headers: {
-            Authorization: `Bearer ${this.spotify_auth_token}`,
+            Authorization: `Bearer ${this.auth_token}`,
           },
         },
       )
-        .then(r => r.json())
         .then(r => {
-          if (r.error != null) {
+          console.log(r.headers.get('content-length'));
+          if ((r.headers.get('content-length') ?? '0') === '0') {
+            return null;
+          } else {
+            return r.json();
+          }
+        })
+        .then(r => {
+          if (r == null) {
+            return undefined;
+          } else if (r.error != null) {
             throw r;
           } else {
             return r as SpotifyCurrentlyPlaying;
           }
         })
-        .catch((e: SpotifyError) => {
-          if (e.error.message === 'The access token expired') {
-            // TODO: refresh the token
-            console.error(e.error);
-            throw new Error(e.error.message);
-          } else if (e.error.message === 'Invalid access token') {
-            console.error(e.error);
-            throw new Error(e.error.message);
+        .catch((e: SpotifyError | any) => {
+          if (e.error != null) {
+            if (e.error.message === 'The access token expired') {
+              // TODO: refresh the token
+              console.error(e.error);
+              throw new Error(e.error.message);
+            } else if (e.error.message === 'Invalid access token') {
+              console.error(e.error);
+              throw new Error(e.error.message);
+            } else {
+              console.error(e.error);
+              throw new Error(e.error.message);
+            }
           } else {
-            console.error(e.error);
-            throw new Error(e.error.message);
+            throw new Error(e);
           }
         });
 
@@ -126,8 +113,8 @@ export class SpotifyService {
       console.error('Spotify token is expired');
       await this.launchSpotifyOAuth();
       if (
-        this.spotify_auth_token_exp != null &&
-        this.spotify_auth_token_exp >= DateTime.local()
+        this.auth_token_exp != null &&
+        this.auth_token_exp >= DateTime.local()
       ) {
         return await this.getSpotifyStatus();
       } else {
@@ -139,10 +126,9 @@ export class SpotifyService {
 
   launchSpotifyOAuth(hidden: boolean = false): Promise<void> {
     return new Promise((resolve, reject) => {
-      const client_id = this.spotify_client_id;
-      const redirect_url = `${window.location.origin}/spotify-oauth`;
+      const redirect_url = `${window.location.origin}/oauth/spotify`;
       const url =
-        `https://accounts.spotify.com/authorize?client_id=${client_id}&` +
+        `https://accounts.spotify.com/authorize?client_id=${this.client_id}&` +
         `response_type=token&` +
         `redirect_uri=${redirect_url}&` +
         `scope=user-read-currently-playing`;
@@ -202,6 +188,8 @@ export class SpotifyService {
 }
 
 class _SpotifySettings {
+  readonly prefix = 'spotify';
+
   enabled?: boolean;
 
   client_id?: string;

@@ -1,7 +1,7 @@
 import * as React from 'react';
-import { Props } from 'react';
+import { PropsWithChildren } from 'react';
 
-export function Column(props: Props<void>) {
+export function Column(props: PropsWithChildren<{}>) {
   return (
     <div
       style={{

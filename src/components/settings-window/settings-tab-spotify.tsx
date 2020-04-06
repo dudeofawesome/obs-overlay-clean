@@ -23,10 +23,7 @@ export class SettingsTabSpotify extends Component<
 
   constructor(props: ClassAttributes<void>) {
     super(props);
-    this.state = {
-      enabled: false,
-      client_id: '90f61a9875dc44a28faf437b70e8b01b',
-    };
+    this.state = {};
   }
 
   componentDidMount() {
@@ -36,8 +33,7 @@ export class SettingsTabSpotify extends Component<
       ...s,
       enabled: this.spotify_service?.enabled ?? false,
       client_id:
-        this.spotify_service?.spotify_client_id ??
-        '90f61a9875dc44a28faf437b70e8b01b',
+        this.spotify_service?.client_id ?? '90f61a9875dc44a28faf437b70e8b01b',
     }));
   }
 
@@ -59,45 +55,39 @@ export class SettingsTabSpotify extends Component<
     }
   }
 
-  setEnabled(enabled: boolean) {
-    this.setState(s => ({ ...s, enabled }));
-    if (this.spotify_service != null) {
-      this.spotify_service.enabled = enabled;
-    }
-  }
-
-  setClientId(client_id: string) {
-    this.setState(s => ({ ...s, client_id }));
-    if (this.spotify_service != null) {
-      this.spotify_service.spotify_client_id = client_id;
-    }
-  }
-
   render() {
     return (
       <TrueCenter>
         <Row>
           <Card variant="outlined" style={{ marginRight: '15px' }}>
             <CardContent>
-              <Column>
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      checked={this.spotify_service?.enabled ?? false}
-                      onChange={e => this.setEnabled(e.target.checked)}
-                      name="Spotify Enabled"
+              <SpotifyServiceContext.Consumer>
+                {spotify_service => (
+                  <Column>
+                    <FormControlLabel
+                      control={
+                        <Checkbox
+                          defaultChecked={spotify_service.enabled ?? false}
+                          onChange={e =>
+                            (spotify_service.enabled = e.target.checked)
+                          }
+                          name="Spotify Enabled"
+                        />
+                      }
+                      label="Show Spotify Status"
                     />
-                  }
-                  label="Show Spotify Status"
-                />
-                <TextField
-                  id="client_id"
-                  label="Spotify Client ID"
-                  value={this.spotify_service?.spotify_client_id ?? ''}
-                  required
-                  onChange={e => this.setClientId(e.target.value)}
-                />
-              </Column>
+                    <TextField
+                      id="client_id"
+                      label="Spotify Client ID"
+                      defaultValue={spotify_service.client_id ?? ''}
+                      required
+                      onChange={e =>
+                        (spotify_service.client_id = e.target.value)
+                      }
+                    />
+                  </Column>
+                )}
+              </SpotifyServiceContext.Consumer>
             </CardContent>
           </Card>
           <Column>
@@ -122,8 +112,6 @@ export class SettingsTabSpotify extends Component<
 }
 
 interface SettingsTabSpotifyState {
-  enabled: boolean;
-  client_id: string;
   test_successful?: boolean;
   test_res?: string;
   test_error?: string;
