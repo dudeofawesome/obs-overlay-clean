@@ -22,7 +22,7 @@ export class Notification extends Component<NotificationProps> {
           ) : null}
           <div className="name">{this.props.name}</div>
           <div className="spacer"></div>
-          {this.props.time ? (
+          {this.props.time != null ? (
             <InfrequentClock className="time">
               {this.props.time.toRelative({ style: 'narrow' })}
             </InfrequentClock>

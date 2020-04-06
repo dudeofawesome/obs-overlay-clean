@@ -1,13 +1,12 @@
-import * as React from 'react';
-import { Component, PropsWithChildren, ComponentProps } from 'react';
+import React, { Component } from 'react';
 import { Subscription, timer } from 'rxjs';
 
-export class InfrequentClock extends Component<any> {
+export class InfrequentClock extends Component<any, { i: number }> {
   private timer?: Subscription;
 
   componentDidMount() {
-    this.timer = timer(60000, 60000).subscribe(() =>
-      this.setState(s => ({ ...s })),
+    this.timer = timer(60000, 60000).subscribe(i =>
+      this.setState(s => ({ ...s, i })),
     );
   }
 
@@ -16,6 +15,10 @@ export class InfrequentClock extends Component<any> {
   }
 
   render() {
-    return <div {...this.props}>{this.props.children}</div>;
+    return (
+      <div {...this.props} title={this.state.i.toString()}>
+        {this.props.children}
+      </div>
+    );
   }
 }
