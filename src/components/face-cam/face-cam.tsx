@@ -55,7 +55,9 @@ export class FaceCam extends Component<{}, FaceCamState> {
     return (
       <div className="face-cam window">
         {this.state?.error_msg}
-        <video ref={this.video_ref}></video>
+        {this.camera_service?.enabled ? (
+          <video ref={this.video_ref}></video>
+        ) : null}
       </div>
     );
   }
