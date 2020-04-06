@@ -29,12 +29,16 @@ export class Notifications extends Component<
   }
 
   async subscribeTwitch() {
-    await this.twitch_service?.subscribe();
-
-    this.twitch_service?.new_follower?.subscribe(follower => {
-      console.log('Notifications got a new follower');
-      this.setState(s => ({ ...s, followers: [follower, ...s.followers] }));
-    });
+    try {
+      await this.twitch_service?.subscribe();
+    } catch (e) {
+      console.error(e);
+    } finally {
+      this.twitch_service?.new_follower?.subscribe(follower => {
+        console.log('Notifications got a new follower');
+        this.setState(s => ({ ...s, followers: [follower, ...s.followers] }));
+      });
+    }
   }
 
   render() {
