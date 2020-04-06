@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import { DateTime } from 'luxon';
 
 import { InfrequentClock } from '../infrequent-clock/infrequent-clock';
+import { Row } from '../row/row';
+import { Column } from '../column/column';
 
 import './notification.scss';
 
@@ -12,11 +14,11 @@ export class Notification extends Component<NotificationProps> {
 
   render() {
     return (
-      <div
-        className="notification column"
+      <Column
+        className="notification"
         style={{ display: this.props.visible ? undefined : 'none' }}
       >
-        <div className="header row">
+        <Row className="header">
           {this.props.icon_url != null ? (
             <img className="icon" src={this.props.icon_url} alt="app icon" />
           ) : null}
@@ -27,9 +29,9 @@ export class Notification extends Component<NotificationProps> {
               {this.props.time.toRelative({ style: 'narrow' })}
             </InfrequentClock>
           ) : null}
-        </div>
+        </Row>
         <div className="body">{this.props.children}</div>
-      </div>
+      </Column>
     );
   }
 }

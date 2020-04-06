@@ -75,19 +75,14 @@ export class NotificationSpotify extends Component<
         icon_url="https://lh3.googleusercontent.com/UrY7BAZ-XfXGpfkeWg0zCCeo-7ras4DCoRalC_WXXWTK9q5b0Iw7B0YQMsVxZaNB7DM=s180"
         visible={this.state.song_name != null}
       >
-        <Row className="row status">
-          {/* <img
-            className="album-art"
-            src={this.state.album_art_url}
-            alt={this.state.album_name}
-          /> */}
+        <Row className="status">
           <div
             className="album-art"
             style={{
               backgroundImage: `url('${this.state.album_art_url}')`,
             }}
           ></div>
-          <Column className="column info" style={{ justifyContent: 'center' }}>
+          <Column className="info" style={{ justifyContent: 'center' }}>
             <div className="song-name">{this.state.song_name}</div>
             <div className="artist-name">{this.state.artist_name}</div>
             <div className="album-name">{this.state.album_name}</div>

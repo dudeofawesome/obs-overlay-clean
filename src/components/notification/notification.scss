@@ -9,16 +9,6 @@
   backdrop-filter: blur(20px);
 }
 
-.row {
-  display: flex;
-  flex-direction: row;
-}
-
-.column {
-  display: flex;
-  flex-direction: column;
-}
-
 .header {
   justify-content: flex-start;
   align-items: center;
