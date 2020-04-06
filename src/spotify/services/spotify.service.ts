@@ -73,8 +73,7 @@ export class SpotifyService {
         },
       )
         .then(r => {
-          console.log(r.headers.get('content-length'));
-          if ((r.headers.get('content-length') ?? '0') === '0') {
+          if (r.headers.get('Content-Length') === '0') {
             return null;
           } else {
             return r.json();
@@ -102,6 +101,10 @@ export class SpotifyService {
               console.error(e.error);
               throw new Error(e.error.message);
             }
+          } else if (
+            e.message.startsWith('JSON.parse: unexpected end of data')
+          ) {
+            return undefined;
           } else {
             throw new Error(e);
           }
