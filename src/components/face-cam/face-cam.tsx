@@ -53,7 +53,10 @@ export class FaceCam extends Component<{}, FaceCamState> {
 
   render() {
     return (
-      <div className="face-cam window">
+      <div
+        className="face-cam window"
+        style={!this.camera_service?.enabled ? { marginBottom: '0px' } : {}}
+      >
         {this.state?.error_msg}
         {this.camera_service?.enabled ? (
           <video ref={this.video_ref}></video>
