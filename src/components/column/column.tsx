@@ -1,15 +1,7 @@
-import * as React from 'react';
-import { PropsWithChildren } from 'react';
+import React, { ComponentProps } from 'react';
 
-export function Column(props: PropsWithChildren<{}>) {
-  return (
-    <div
-      style={{
-        display: 'flex',
-        flexDirection: 'column',
-      }}
-    >
-      {props.children}
-    </div>
-  );
+import { Row } from '../row/row';
+
+export function Column(props: ComponentProps<'div'>) {
+  return <Row style={{ flexDirection: 'column' }}>{props.children}</Row>;
 }

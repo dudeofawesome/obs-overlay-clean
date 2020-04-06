@@ -5,9 +5,9 @@ export function Row(props: ComponentProps<'div'>) {
     <div
       {...props}
       style={{
-        ...props.style,
         display: 'flex',
         flexDirection: 'row',
+        ...props.style,
       }}
     >
       {props.children}
