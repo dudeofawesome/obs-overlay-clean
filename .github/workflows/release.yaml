@@ -22,6 +22,7 @@ jobs:
       - name: Deploy 🚀
         uses: JamesIves/github-pages-deploy-action@releases/v3
         with:
+          SSH: true
           BRANCH: gh-pages # The branch the action should deploy to.
           COMMIT_MESSAGE: 🚀 release
           FOLDER: build # The folder the action should deploy.
