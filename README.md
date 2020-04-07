@@ -1,3 +1,14 @@
+# Clean OBS Overlay
+
+1. Start OBS with some of the following params:
+   ```
+   "C:\Program Files\obs-studio\bin\64bit\obs64.exe" --enable-media-stream --enable-experimental-web-platform-features --remote-debugging-port=9222
+   ```
+   - `--enable-media-stream` enables webcam support
+   - `--enable-experimental-web-platform-features` enables the soft blur in the background of notifications
+   - `--remote-debugging-port=9222` enables remote debugging (only useful for development)
+   - `--ignore-certificate-errors` disables certificate checking. DON'T DO THIS!
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
