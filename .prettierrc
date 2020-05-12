@@ -1,0 +1,6 @@
+# https://prettier.io/docs/en/options.html
+arrowParens: avoid
+bracketSpacing: true
+trailingComma: all
+semi: true
+singleQuote: true
