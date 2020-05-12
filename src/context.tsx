@@ -27,16 +27,3 @@ export function Providers(props: PropsWithChildren<{}>) {
     </CameraServiceContext.Provider>
   );
 }
-
-function _createMask(...args: boolean[]): number {
-  let a = 0b0;
-  for (let i = 0; i < args.length; i++) {
-    a &= (args[i] ? 1 : 0) << i;
-  }
-  console.log(a);
-
-  const b = args.reduce((acc, curr, i) => (acc &= (curr ? 1 : 0) << i), 0b0);
-  console.log(b);
-
-  return a;
-}
