@@ -8,7 +8,7 @@ import { Column } from '../column/column';
 import './notification.scss';
 
 export class Notification extends Component<NotificationProps> {
-  static defaultProps = {
+  static defaultProps: Partial<NotificationProps> = {
     visible: true,
   };
 
@@ -25,9 +25,11 @@ export class Notification extends Component<NotificationProps> {
           <div className="name">{this.props.name}</div>
           <div className="spacer"></div>
           {this.props.time != null ? (
-            <InfrequentClock className="time">
-              {this.props.time.toRelative({ style: 'narrow' })}
-            </InfrequentClock>
+            <InfrequentClock
+              className="time"
+              update_frequency={30000}
+              time={this.props.time}
+            />
           ) : null}
         </Row>
         <div className="body">{this.props.children}</div>
